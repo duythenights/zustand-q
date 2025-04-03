@@ -12,7 +12,7 @@ import type {
 import { createQueryHook } from "./query";
 import { createMutationHook } from "./mutation";
 import { get } from "./utils";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 // Type guard functions
 function isQueryConfig<TData, TVariables, TState>(
@@ -137,14 +137,20 @@ export function useStore<T>(
   const value = globalStore((state) => get(state, key, initialData) as T);
   const setState = globalStore((state) => state.setState);
 
+  // Avoid unnecessary re render in Strict Mode
+  const initializedRef = useRef(false);
+
   // Khởi tạo giá trị ban đầu nếu chưa tồn tại
   useEffect(() => {
-    setState((prev) => {
-      if (get(prev, key) === undefined) {
-        return { ...prev, [key]: initialData };
-      }
-      return prev;
-    });
+    if (!initializedRef.current) {
+      setState((prev) => {
+        if (get(prev, key) === undefined) {
+          return { ...prev, [key]: initialData };
+        }
+        return prev;
+      });
+      initializedRef.current = true; // Prevents re-execution
+    }
   }, [key, initialData, setState]); // Thêm dependencies để đảm bảo chạy lại khi cần
 
   // Hàm setValue hỗ trợ cả giá trị trực tiếp và callback
