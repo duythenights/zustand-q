@@ -1,6 +1,6 @@
 {
   "name": "zustand-q",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "Type-safe async state management for Zustand and simplified global state usage.",
   "main": "dist/index.js",
