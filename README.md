@@ -1,16 +1,45 @@
-# zustand-q
+![Zustand Q Social Card](https://zustand-q.vercel.app/img/social-card.webp)
 
-![NPM Version](https://img.shields.io/npm/v/zustand-q.svg)
-![License](https://img.shields.io/npm/l/zustand-q.svg)
+[![NPM Version](https://img.shields.io/npm/v/zustand-q.svg)](https://www.npmjs.com/package/zustand-q)
+[![Build Size](https://img.shields.io/bundlephobia/minzip/zustand-q)](https://bundlephobia.com/package/zustand-q)
+[![License](https://img.shields.io/npm/l/zustand-q.svg)](https://github.com/ngnhutrung25/zustand-q/blob/main/LICENSE)
 
-`zustand-q` is an extension library for [Zustand](https://github.com/pmndrs/zustand), designed to simplify async state management in React applications. It provides powerful hooks for handling queries and mutations, seamlessly integrating with Zustand's global state management.
+Zustand Q is a modern, enhanced state management library built on top of [Zustand](https://github.com/pmndrs/zustand), tailored for **React** and **React Native** applications. It preserves Zustand’s lightweight and minimalist philosophy while introducing powerful asynchronous state management features inspired by [Tanstack React Query](https://tanstack.com/query). Whether you’re fetching data from an API, performing CRUD operations, or persisting user settings, Zustand Q offers a simple, type-safe, and scalable solution that eliminates boilerplate and complexity.
+
+**Visit [zustand-q.vercel.app](https://zustand-q.vercel.app) for docs, guides, API, and more!**
+
+---
 
 ## Features
 
-- **Query Hooks**: Automatically manage loading states (pending, success, error) with refetch capabilities.
-- **Mutation Hooks**: Perform data modifications (POST, PUT, DELETE) and update state effortlessly.
-- **TypeScript Support**: Fully written in TypeScript with strong typing and safety.
-- **Lightweight**: Minimal dependencies, leveraging Zustand's efficiency.
+Zustand Q stands out with the following features:
+
+- **Asynchronous State Management**:
+
+  - **Queries**: Fetch data seamlessly and update the store (e.g., `getCatList` to load a list of cats).
+  - **Mutations**: Perform updates like adding or deleting items with type-safe async logic.
+  - _Example_: `mutate({ name: "Mimi" })` to add a cat, with automatic store updates.
+
+- **Developer Tools**:
+
+  - Integrate with Redux DevTools using a single `devtoolsName` option.
+  - _Example_: `devtoolsName: "MyStore"` lets you inspect state changes in your browser.
+
+- **Persistence Made Simple**:
+
+  - Save state to local storage with `persistName`—no extra setup required.
+  - _Example_: `persistName: "app-theme"` keeps your theme setting across reloads.
+
+- **Flexible Selectors**:
+
+  - Access state with concise string selectors (`useStore<number>("count")`) or powerful function selectors (`(state) => state.count`).
+  - Optimized for performance with Zustand’s memoization.
+
+- **Type Safety**:
+  - Enhanced TypeScript support with generics for state, actions, queries, and mutations.
+  - _Example_: Define `interface Cat { id: string; name: string }` and get full type checking throughout your store.
+
+These benefits make Zustand Q a lightweight yet feature-rich alternative, ideal for both prototyping and production-grade apps.
 
 ---
 
@@ -19,19 +48,21 @@
 Install `zustand-q` via Yarn or npm:
 
 ```bash
-yarn add zustand-q zustand
+yarn add zustand-q
 ```
 
 or
 
 ```bash
-npm install zustand-q zustand
+npm install zustand-q
 ```
+
+> This will also install `zustand` (version 5.0.3 or higher) as a dependency automatically.
 
 ### Requirements
 
 - **React**: >= 16.8.0 (uses hooks)
-- **Zustand**: >= 5.0.0
+- **Zustand**: >= 5.0.0 (included as a dependency)
 
 ---
 
@@ -62,7 +93,10 @@ export const useCatStore = createStore({
   initialData: { cats: [] } as CatState,
   actions: (set) => ({
     clearCats: () => set({ cats: [] }),
-    addCats: (name: string) => set({ cats: [{ id: "123", name }] }),
+    addCatOffline: (name: string) =>
+      set((state) => ({
+        cats: [...state.cats, { id: Date.now().toString(), name }],
+      })),
   }),
   queries: {
     getCatList: {
@@ -156,88 +190,6 @@ export default App;
 
 ---
 
-## API
-
-### `createStore(config)`
-
-Creates a Zustand store with async capabilities.
-
-- **initialData**: Initial state object.
-- **actions**: Functions to modify state.
-- **queries**: Async data fetching with lifecycle hooks.
-- **mutations**: Async data mutations with lifecycle hooks.
-
-### `useStore(key, initialData)`
-
-A global hook to manage simple key-value state.
-
-- Returns: `[value, setValue]`
-
-### Query Hook
-
-Returned by `queries`:
-
-- `isPending`, `isSuccess`, `isError`, `status`, `error`, `refetch`
-
-### Mutation Hook
-
-Returned by `mutations`:
-
-- `mutate`, `isPending`, `isSuccess`, `isError`, `status`, `error`
-
----
-
-## Project Structure
-
-```
-zustand-q/
-├── src/
-│   ├── index.ts        # Main entry point
-│   ├── mutation.ts     # Mutation hook implementation
-│   ├── query.ts        # Query hook implementation
-│   ├── types.ts        # TypeScript definitions
-│   ├── utils.ts        # Utility functions
-├── package.json        # Package configuration
-├── tsconfig.json       # TypeScript configuration
-├── rollup.config.js    # Rollup build configuration
-└── LICENSE             # MIT License
-```
-
----
-
-## Building the Library
-
-To build the library locally:
-
-```bash
-yarn build
-```
-
-This runs TypeScript compilation (`tsc`) and Rollup bundling.
-
----
-
-## Contributing
-
-We welcome contributions! To get started:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature`).
-3. Commit your changes (`git commit -m "Add your feature"`).
-4. Push to the branch (`git push origin feature/your-feature`).
-5. Open a Pull Request.
-
-Please ensure your code follows the existing style and includes tests where applicable.
-
----
-
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
----
-
-## Acknowledgments
-
-- Built with inspiration from [Zustand](https://github.com/pmndrs/zustand) and modern state management patterns.
-- Thanks to the open-source community for continuous support!
